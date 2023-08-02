@@ -1,0 +1,2 @@
+library(xcms)
+cwp <- CentWaveParam(snthresh = 5, noise = 100,ppm = 10,peakwidth = c(5, 50))

@@ -1,0 +1,44 @@
+CSname <- "CS35"
+mzMLFolder = paste0("U:/zfjDB/Data/mzML/",CSname)
+mgfFilePath = paste0("U:/zfjDB/Data/mgf/",CSname)
+MixedStandardsFile = "E:/Github data/AutoRtExtractor/data/Mix51.csv"
+ResultPath = "U:/zfjDB/Data/PreliminaryRtExtractor"
+BatchPreliminaryRtExtractorResult <- paste0("U:/zfjDB/Data/PreliminaryRtExtractor/1_PreliminaryRtExtractor_",CSname,".Rdata")
+
+
+## 执行AutoRTvalidator
+s <- Sys.time()
+load(BatchPreliminaryRtExtractorResult)
+AutomatedRtExtractorList <- AutoRtExtractor:::AutoRTvalidator(AutomatedRtExtractorList,Intensity1 = 2000, Intensity2 = 1000)
+e <- Sys.time()
+print(e-s)
+
+## ManualRTvalidator
+s <- Sys.time()
+AutomatedRtExtractorList <- AutoRtExtractor:::ManualRTvalidator(AutomatedRtExtractorList, Intensity2 = 1000)
+# save(AutomatedRtExtractorList, file = gsub("1_PreliminaryRtExtractor_", "2_ManualRTvalidator_",BatchPreliminaryRtExtractorResult))
+e <- Sys.time()
+print(e-s)
+
+## 执行RTscreening
+s <- Sys.time()
+# load(gsub("1_PreliminaryRtExtractor_", "2_ManualRTvalidator_",BatchPreliminaryRtExtractorResult))
+AutomatedRtExtractorList <- AutoRtExtractor:::RTscreening(AutomatedRtExtractorList)
+AutomatedRtExtractorList <- AutoRtExtractor:::AdductAlignment(AutomatedRtExtractorList, deltaRT = 12, intensity1 = 2000)
+# save(AutomatedRtExtractorList, file = gsub("1_PreliminaryRtExtractor_", "3_AdductAlignment_",BatchPreliminaryRtExtractorResult))
+e <- Sys.time()
+print(e-s)
+
+## 寻找MSMS
+s <- Sys.time()
+AutomatedRtExtractorList <- AutoRtExtractor:::MSMSFinder(AutomatedRtExtractorList, mgfFilePath, ppm = 20, deltaRt = 6, MSMSthreshold = 0.001, cores = 2)
+save(AutomatedRtExtractorList, file = gsub("1_PreliminaryRtExtractor_", "4_MSMSFinder_",BatchPreliminaryRtExtractorResult))
+e <- Sys.time()
+print(e-s)
+
+## 汇总结果
+s <- Sys.time()
+summaryRes <- AutoRtExtractor:::ResultSummary(AutomatedRtExtractorList)
+readr::write_excel_csv(summaryRes, file = paste0("U:/zfjDB/Data/PreliminaryRtExtractor/",CSname,"_summaryRes.csv"), na = "")
+e <- Sys.time()
+print(e-s)

@@ -1,0 +1,33 @@
+Package: AutoRtExtractor
+Type: Package
+Title: Extract retention time
+Version: 0.9.0
+Author: Fujian Zheng
+Maintainer: Fujian Zheng <zhengfj@dicp.ac.cn>
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: False
+Depends: R (>= 3.6.0),
+Imports: ggplot2,
+    ggrepel,
+    ggplotify,
+    patchwork,
+    dplyr,
+    RColorBrewer,
+    gWidgets2,
+    gWidgets2,
+    ChemmineR,
+    ggbump,
+    xcms,
+    MALDIquant,
+    MALDIquantForeign,
+    magrittr,
+    scorepeak,
+    OrgMassSpecR,
+    enviPat,
+    MetEx,
+    ggpmisc,
+    minpack.lm
+RoxygenNote: 7.2.0
